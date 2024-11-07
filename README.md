@@ -10,6 +10,9 @@
 | Arch Linux | x86_64 | [![](https://codebuild.us-west-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoib2cxaHp3bE5ndWhWR0RIRkxxQzRwR1dHa05DWmQ0bENnWGNHYzM2YmR3OFRHNWpPYStGYUM1WXBQVUNoZjJRa2xrZVpuRXVyWVVvQVNzNExqSlN5TGEwPSIsIml2UGFyYW1ldGVyU3BlYyI6Ii9zSjVybGNsNEJMUEZwSlUiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)](https://us-west-2.codebuild.aws.amazon.com/project/eyJlbmNyeXB0ZWREYXRhIjoiRWVOYlA5OHZqUVVLUTZLYlJzZmdOQkR5dmpVSTBPS1h1M3RxQkxXa3pyMC9OOUw5dDJlUDcyYm05Q3pBOEZ1aWJFYkFBajFGZ3RJWUM5WkpoZUE4K0IrdFIvYytyNVRYREpQTUNHL05vTXlLQ0E9PSIsIml2UGFyYW1ldGVyU3BlYyI6InFuS1hJY3JTaWpSWENLM1EiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D) |
 | Ubuntu 18.04 | x86_64 | [![](https://codebuild.us-west-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiVkhsbmdlYkk3M1JESVdiTHc0elpobXEvUk4wRWlBZUpEZzdmem1QbGJRZ3dMbVE2RWZpbHZjNmVCd0dJaUFSZ1pzQVlyZ1dvdndWTjZSRjg0WDRYRFh3PSIsIml2UGFyYW1ldGVyU3BlYyI6IjJic2dnR3ZpTEQyMmRPMXQiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)](https://us-west-2.codebuild.aws.amazon.com/project/eyJlbmNyeXB0ZWREYXRhIjoiSlNPak1vQmVBR3JnUlAwRWg2N3hHRHF1U2Z6RkQvY1NHRHM4RTJ0WEFBdjFTSzBzY21kZEpPMDk2QXdwRStUWUZmWWFmTkRkU1FGa0lQUGoxbU9GNU45QVJ1YVkzZkY0dmsxV2FRZVljakt3UmJpdTM2a0JnQT09IiwiaXZQYXJhbWV0ZXJTcGVjIjoieE5LSUlmNVN1UWdqbWg0cSIsIm1hdGVyaWFsU2V0U2VyaWFsIjoxfQ%3D%3D) |
 
+## Eugo Fork Differences
+Incorporates AWS patches from [awslambdaric](https://github.com/eugo-inc/aws-lambda-python-runtime-interface-client/tree/main/deps/patches) for easier integration. 
+
 ## AWS Lambda C++ Runtime
 
 C++ implementation of the lambda runtime API

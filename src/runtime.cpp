@@ -280,6 +280,7 @@ runtime::next_outcome runtime::get_next()
     invocation_request req;
     req.payload = resp.get_body();
     req.request_id = std::move(out).get_result();
+    req.content_type = resp.get_content_type();
 
     out = resp.get_header(TRACE_ID_HEADER);
     if (out.is_success()) {
@@ -321,36 +322,43 @@ runtime::next_outcome runtime::get_next()
 runtime::post_outcome runtime::post_success(std::string const& request_id, invocation_response const& handler_response)
 {
     std::string const url = m_endpoints[Endpoints::RESULT] + request_id + "/response";
-    return do_post(url, request_id, handler_response);
+    return do_post(url, handler_response.get_content_type(), handler_response.get_payload(), handler_response.get_xray_response());
 }
 
 runtime::post_outcome runtime::post_failure(std::string const& request_id, invocation_response const& handler_response)
 {
     std::string const url = m_endpoints[Endpoints::RESULT] + request_id + "/error";
-    return do_post(url, request_id, handler_response);
+    return do_post(url, handler_response.get_content_type(), handler_response.get_payload(), handler_response.get_xray_response());
+}
+
+runtime::post_outcome runtime::post_init_error(runtime_response const& init_error_response)
+{
+    std::string const url = m_endpoints[Endpoints::INIT];
+    return do_post(url, init_error_response.get_content_type(), init_error_response.get_payload(), init_error_response.get_xray_response());
 }
 
 runtime::post_outcome runtime::do_post(
     std::string const& url,
-    std::string const& request_id,
-    invocation_response const& handler_response)
+    std::string const& content_type,
+    std::string const& payload,
+    std::string const& xray_response)
 {
     set_curl_post_result_options();
     curl_easy_setopt(m_curl_handle, CURLOPT_URL, url.c_str());
     logging::log_info(LOG_TAG, "Making request to %s", url.c_str());
 
     curl_slist* headers = nullptr;
-    if (handler_response.get_content_type().empty()) {
+     if (content_type.empty()) {
         headers = curl_slist_append(headers, "content-type: text/html");
     }
     else {
-        headers = curl_slist_append(headers, ("content-type: " + handler_response.get_content_type()).c_str());
+        headers = curl_slist_append(headers, ("content-type: " + content_type).c_str());
     }
 
+    headers = curl_slist_append(headers, ("lambda-runtime-function-xray-error-cause: " + xray_response).c_str());
     headers = curl_slist_append(headers, "Expect:");
     headers = curl_slist_append(headers, "transfer-encoding:");
     headers = curl_slist_append(headers, m_user_agent_header.c_str());
-    auto const& payload = handler_response.get_payload();
     logging::log_debug(
         LOG_TAG, "calculating content length... %s", ("content-length: " + std::to_string(payload.length())).c_str());
     headers = curl_slist_append(headers, ("content-length: " + std::to_string(payload.length())).c_str());
@@ -367,10 +375,10 @@ runtime::post_outcome runtime::do_post(
     if (curl_code != CURLE_OK) {
         logging::log_debug(
             LOG_TAG,
-            "CURL returned error code %d - %s, for invocation %s",
+            "CURL returned error code %d - %s, when calling %s",
             curl_code,
             curl_easy_strerror(curl_code),
-            request_id.c_str());
+            url.c_str());
         return aws::http::response_code::REQUEST_NOT_MADE;
     }
 
@@ -521,13 +529,14 @@ invocation_response invocation_response::success(std::string payload, std::strin
 }
 
 AWS_LAMBDA_RUNTIME_API
-invocation_response invocation_response::failure(std::string const& error_message, std::string const& error_type)
+invocation_response invocation_response::failure(std::string const& error_message, std::string const& error_type, std::string const& xray_response)
 {
     invocation_response r;
     r.m_success = false;
     r.m_content_type = "application/json";
     r.m_payload = R"({"errorMessage":")" + json_escape(error_message) + R"(","errorType":")" + json_escape(error_type) +
                   R"(", "stackTrace":[]})";
+    r.m_xray_response = xray_response;
     return r;
 }
 

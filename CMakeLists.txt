@@ -74,7 +74,7 @@ endif()
 target_compile_options(${PROJECT_NAME} PRIVATE
     "-fno-exceptions"
     "-fno-rtti"
-    "-fvisibility=hidden"
+    #"-fvisibility=hidden" # Breaks dynamic library consumers
     "-fvisibility-inlines-hidden"
     "-Wall"
     "-Wextra"

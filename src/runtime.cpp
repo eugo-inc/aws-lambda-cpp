@@ -535,8 +535,7 @@ invocation_response invocation_response::failure(std::string const& error_messag
     r.m_success = false;
     r.m_content_type = "application/json";
     r.m_payload = R"({"errorMessage":")" + json_escape(error_message) + R"(","errorType":")" + json_escape(error_type) +
-                  R"(", "stackTrace":[]})";
-    r.m_xray_response = xray_response;
+                  R"(","stackTrace":[]})";
     return r;
 }
 

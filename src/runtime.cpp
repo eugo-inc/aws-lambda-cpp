@@ -41,6 +41,7 @@ static constexpr auto CLIENT_CONTEXT_HEADER = "lambda-runtime-client-context";
 static constexpr auto COGNITO_IDENTITY_HEADER = "lambda-runtime-cognito-identity";
 static constexpr auto DEADLINE_MS_HEADER = "lambda-runtime-deadline-ms";
 static constexpr auto FUNCTION_ARN_HEADER = "lambda-runtime-invoked-function-arn";
+static constexpr auto TENANT_ID_HEADER = "lambda-runtime-aws-tenant-id"; // @EUGO_CHANGE: applied patch from awslambdaric
 
 enum Endpoints {
     INIT,
@@ -301,6 +302,13 @@ runtime::next_outcome runtime::get_next()
     if (out.is_success()) {
         req.function_arn = std::move(out).get_result();
     }
+
+    // @EUGO_CHANGE: @begin - applied patch from awslambdaric
+    out = resp.get_header(TENANT_ID_HEADER);
+    if (out.is_success()) {
+        req.tenant_id = std::move(out).get_result();
+    }
+    // @EUGO_CHANGE: @end
 
     out = resp.get_header(DEADLINE_MS_HEADER);
     if (out.is_success()) {

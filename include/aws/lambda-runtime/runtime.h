@@ -62,6 +62,11 @@ struct invocation_request {
     std::string content_type;
 
     /**
+     * The Tenant ID of the current invocation. @EUGO_CHANGE: applied patch from awslambdaric
+     */
+    std::string tenant_id;
+
+    /**
      * Function execution deadline counted in milliseconds since the Unix epoch.
      */
     std::chrono::time_point<std::chrono::system_clock> deadline;

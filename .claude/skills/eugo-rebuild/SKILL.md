@@ -44,8 +44,8 @@ adopts a new `version.commit` (merge/land and adoption are decoupled; the pin ha
 `should_auto_update: true` but treat the bump as an explicit, reviewed step).
 Order of operations:
 
-1. Push the commit to `eugo-inc/aws-lambda-cpp` master FIRST (the setup fetches
-   the tarball by sha; unpushed sha = 404). Never force-push master.
+1. Push the commit to `eugo-inc/aws-lambda-cpp` eugo-main FIRST (the setup fetches
+   the tarball by sha; unpushed sha = 404). Never force-push eugo-main.
 2. Bump `version.commit` in meta.json.
 3. Rebuild `native/aws/aws_lambda_cpp`, run its testspec programs, then rebuild
    and retest `python/wave_4/awslambdaric` if headers changed.

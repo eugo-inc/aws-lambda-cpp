@@ -1,6 +1,6 @@
 ---
 name: eugo-upstream-merge
-description: Use when merging upstream awslabs/aws-lambda-cpp into the Eugo fork (eugo-inc/aws-lambda-cpp, branch master). Covers the fork's divergences (awslambdaric patches, tenant_id, -fvisibility=hidden removal), the merge recipe, and the protomolecule native/aws/aws_lambda_cpp commit-pin bump. Activates on "merge upstream", "upstream sync", "aws-lambda-cpp sync", "catch up to awslabs".
+description: Use when merging upstream awslabs/aws-lambda-cpp into the Eugo fork (eugo-inc/aws-lambda-cpp, branch eugo-main). Covers the fork's divergences (awslambdaric patches, tenant_id, -fvisibility=hidden removal), the merge recipe, and the protomolecule native/aws/aws_lambda_cpp commit-pin bump. Activates on "merge upstream", "upstream sync", "aws-lambda-cpp sync", "catch up to awslabs".
 ---
 
 # Merging upstream awslabs/aws-lambda-cpp into the Eugo fork
@@ -13,7 +13,7 @@ its `runtime_client` extension against a shared system library instead of
 vendoring aws-lambda-cpp + patch files. Consumers in protomolecule:
 
 - `dependencies/native/aws/aws_lambda_cpp` -- meta.json pins this repo by
-  `git_commit` (branch `master`, `should_auto_update: true`); its `setup`
+  `git_commit` (branch `eugo-main`, `should_auto_update: true`); its `setup`
   downloads `https://github.com/eugo-inc/aws-lambda-cpp/archive/<commit>.tar.gz`
   and builds with `-DBUILD_SHARED_LIBS=ON`.
 - `dependencies/python/wave_4/awslambdaric` -- `runtime_client.so` carries a
@@ -42,7 +42,7 @@ eugo-inc/aws-lambda-python-runtime-interface-client `deps/patches`.
 
 ## Merge recipe
 
-Canonical branch is `master` (there is no eugo-main). Upstream is
+Canonical branch is `eugo-main`. Upstream is
 https://github.com/awslabs/aws-lambda-cpp (branch `master`).
 
 The repo has a mirror branch `awslabs-master`, but its tip (903c423) is itself a
@@ -52,12 +52,12 @@ merge containing Eugo content -- do NOT treat it as pristine upstream. Merge
 ```
 git remote add upstream https://github.com/awslabs/aws-lambda-cpp.git
 git fetch upstream
-git checkout -b <user>/feat/MM-DD-YY-merge-upstream master
+git checkout -b <user>/feat/MM-DD-YY-merge-upstream eugo-main
 git merge upstream/master
 # resolve conflicts, preserving every divergence listed above
 ```
 
-Open a PR to `master` and land it with the MERGE-COMMIT method only -- never
+Open a PR to `eugo-main` and land it with the MERGE-COMMIT method only -- never
 squash; squashing destroys upstream history and breaks every future sync.
 Optionally fast-forward `awslabs-master` to `upstream/master` afterwards for
 bookkeeping, but keep it a pure mirror from now on.
@@ -65,7 +65,7 @@ bookkeeping, but keep it a pure mirror from now on.
 ## Post-merge adoption in protomolecule
 
 1. Bump `commit` in `dependencies/native/aws/aws_lambda_cpp/meta.json` to the
-   new master head.
+   new eugo-main head.
 2. Re-verify the `setup` regex patches still match: it runs
    `eugo_delete_lines_or_die` on the exact lines `"-Werror"`, `"-fno-exceptions"`,
    `"-fno-rtti"` and `eugo_patch_or_die` on `set(CMAKE_CXX_STANDARD 11)` in
@@ -78,5 +78,5 @@ bookkeeping, but keep it a pure mirror from now on.
 
 The protomolecule `setup` fetches the tarball by sha from GitHub. Push the merge
 commit to `eugo-inc/aws-lambda-cpp` BEFORE bumping the meta.json pin, or the
-protomolecule fetch 404s. Never force-push `master`: rewritten history invalidates
+protomolecule fetch 404s. Never force-push `eugo-main`: rewritten history invalidates
 any sha already pinned in protomolecule.

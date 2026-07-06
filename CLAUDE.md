@@ -23,9 +23,8 @@ Durable knowledge lives in `.claude/skills/`. Route by what is happening:
 
 Traps the skills do not cover:
 
-- The skills say the canonical branch is `master`; the branch has since been
-  renamed -> read `master` in skill text as `eugo-main` (there is no `master`;
-  `origin/awslabs-master` is the upstream mirror, not pristine -- see skill).
+- `origin/awslabs-master` is the upstream mirror, not pristine -- do not treat
+  it as pure upstream (see `eugo-upstream-merge`).
 - Only the tenant_id patch carries `@EUGO_CHANGE` markers (`src/runtime.cpp`,
   `include/aws/lambda-runtime/runtime.h`). The older awslambdaric patches
   (runtime_response/xray in `runtime.h`, `get_content_type` in
